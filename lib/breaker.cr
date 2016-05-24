@@ -25,8 +25,9 @@ class Breaker
   end
 
   def trip
-    @state.trip
-    
+    @state.trip 
+
+    # TODO: add
     # @reclose_time = Time.new + deactivate_time
   end
 
@@ -47,7 +48,7 @@ class Breaker
   end
 
   def errors_ok?
-    # check error rate
+    # TODO: check error rate
     true
   end
 
