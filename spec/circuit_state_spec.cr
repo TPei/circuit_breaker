@@ -2,29 +2,6 @@ require "spec"
 require "../lib/circuit_state.cr"
 
 describe "CircuitState" do
-  describe "#increment_failure_count" do
-    it "increments the failure count" do
-      cs = CircuitState.new
-      cs.fail_count.should eq 0
-      cs.increment_failure_count
-      cs.fail_count.should eq 1
-    end
-  end
-
-  describe "#reset_failure_count" do
-    it "resets the failure_count back to 0" do
-      cs = CircuitState.new
-      cs.fail_count.should eq 0
-      cs.reset_failure_count
-      cs.fail_count.should eq 0
-      cs.increment_failure_count
-      cs.increment_failure_count
-      cs.fail_count.should eq 2
-      cs.reset_failure_count
-      cs.fail_count.should eq 0
-    end
-  end
-
   describe "#trip" do
     it "transitions from :closed, :half_open to :open" do
       cs = CircuitState.new

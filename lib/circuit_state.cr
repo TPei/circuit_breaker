@@ -1,5 +1,5 @@
 class CircuitState
-  getter :fail_count, :last_fail, :state
+  getter :state
 
   OPEN = :open
   HALF_OPEN = :half_open
@@ -7,17 +7,6 @@ class CircuitState
 
   def initialize
     @state = CLOSED
-    @fail_count = 0
-    @last_fail = nil
-  end
-
-  def increment_failure_count
-    @fail_count += 1
-    @last_fail = Time.new
-  end
-
-  def reset_failure_count
-    @fail_count = 0
   end
 
   def trip
@@ -36,7 +25,6 @@ class CircuitState
     validate_state([OPEN, HALF_OPEN])
 
     @state = CLOSED
-    reset_failure_count
   end
 
   def validate_state(states)
