@@ -45,6 +45,8 @@ class Breaker
     elsif reclose?
       yield
     end
+  rescue
+    # TODO: count errors...
   end
 
   def errors_ok?
