@@ -1,28 +1,25 @@
 class Breaker
-  getter :fail_count, :exec_count, :last_fail
-
   @threshold : Int32
   @duration : Int32
   @reclose_time : Time
-  @last_fail : Time | Nil
+  @timeframe : Int32
 
-  def initialize(threshold error_threshold, reenable_after duration)
+  def initialize(threshold error_threshold, timewindow timeframe, reenable_after duration)
     @threshold = error_threshold
     @duration = duration
     @state = CircuitState.new
-    @fail_count = 0
-    @exec_count = 0
-    @last_fail = nil
     @reclose_time = Time.new
+    @failures = [] of Time
+    @executions = [] of Time
+    @timeframe = timeframe
   end
   
   def increment_failure_count
-    @fail_count += 1
-    @last_fail = Time.new
+    @failures << Time.new
   end
 
   def reset_failure_count
-    @fail_count = 0
+    @failures = [] of Time
   end
 
   def trip
@@ -35,8 +32,8 @@ class Breaker
     @state.reset
 
     @reclose_time = Time.new
-    @fail_count = 0
-    @exec_count = 0
+    @failures = [] of Time
+    @executions = [] of Time
   end
 
   def run(&block)
@@ -50,11 +47,11 @@ class Breaker
     # if error_rate still ok, execute
     if errors_ok?
       begin
-        @exec_count += 1
+        @executions << Time.new
+
         return_value = yield
       rescue exc
-        @fail_count += 1
-        @last_fail = Time.new
+        increment_failure_count
         if !errors_ok?
           open_circuit
         end
@@ -62,7 +59,7 @@ class Breaker
       end
     else # if error_rate not ok, open circuit
       open_circuit
-      raise CircuitOpenException.new("Circuit Breaker Open")
+      raise CircuitOpenException.new("Circuit Breaker Opened")
     end
     
     return return_value
@@ -81,15 +78,32 @@ class Breaker
     end
   end
 
-  def error_rate
-    return 0 if @exec_count == 0
+  def error_rate : Float64
+    clean_old @failures, "failures"
+    clean_old @executions, "executions"
 
-    @fail_count / @exec_count.to_f * 100
+    return 0.to_f if @executions.empty?
+
+    @failures.size / @executions.size.to_f * 100
   end
 
   def open_circuit
     @state.trip
     @reclose_time = Time.new + Time::Span.new(0, 0, @duration)
+  end
+
+  def clean_old(arr : Array(Time), name = "failures" )
+    threshold = Time.new - Time::Span.new(0, 0, @timeframe) 
+
+    arr.reject! { |time| time < threshold }
+  end
+
+  def fail_count
+    @failures.size
+  end
+
+  def exec_count
+    @executions.size
   end
 end
 
