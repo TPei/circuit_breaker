@@ -32,15 +32,4 @@ describe "CircuitState" do
       cs.state.should eq :closed
     end
   end
-
-  describe "#validate_state" do
-    it "throws an error if state is not in given states" do
-      cs = CircuitState.new
-      cs.validate_state(:closed).should eq nil
-      
-      expect_raises Exception do
-        cs.validate_state(:open)
-      end
-    end
-  end
 end
