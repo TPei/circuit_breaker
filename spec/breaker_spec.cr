@@ -98,12 +98,33 @@ describe "Breaker" do
       end
       breaker.exec_count.should eq 1
       breaker.fail_count.should eq 1
-      
+
       # error rate too high now
       expect_raises CircuitOpenException do
         breaker.run do
           "swag"
         end
+      end
+    end
+
+    it "allows for error catching" do
+      breaker = Breaker.new(threshold: 5, timewindow: 60, reenable_after: 10)
+      expect_raises ArgumentError do
+        breaker.run do
+          raise ArgumentError.new
+        end
+      end
+      breaker.exec_count.should eq 1
+      breaker.fail_count.should eq 1
+
+      # error rate too high now
+      begin
+        breaker.run do
+          "swag"
+        end
+      rescue ex : CircuitOpenException
+        ex.class.should eq CircuitOpenException
+        ex.message.should eq "Circuit Breaker Open"
       end
     end
 

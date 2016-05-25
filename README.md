@@ -24,4 +24,17 @@ breaker.run do
 end
 ```
 
-The Breaker will open and throw an CircuitOpenException for all subsequent calls, once the threshold is reached.
+The Breaker will open and throw an CircuitOpenException for all subsequent calls, once the threshold is reached. You can of course catch these exceptions and do whatever you want :D
+```
+begin
+  breaker.run do
+    my_rest_call()
+  end
+rescue exc : CircuitOpenException
+  log "happens to the best of us..."
+  42
+end
+```
+
+## Thanks
+Special thanks goes to Pedro Belo on whose ruby circuit breaker implementation this is loosely based. [CB2](https://github.com/pedro/cb2)
