@@ -42,7 +42,7 @@ class Breaker
   def run(&block)
     # if open and not reclosable -> fail
     if @state.state == :open && !reclose?
-      raise "CircuitOpenException"
+      raise CircuitOpenException.new("Circuit Breaker Open")
     end
 
     # now state is closed and not reclosable
@@ -52,16 +52,17 @@ class Breaker
       begin
         @exec_count += 1
         return_value = yield
-      rescue
+      rescue exc
         @fail_count += 1
         @last_fail = Time.new
         if !errors_ok?
           open_circuit
         end
+        raise exc
       end
     else # if error_rate not ok, open circuit
       open_circuit
-      raise "CircuitExecption"
+      raise CircuitOpenException.new("Circuit Breaker Open")
     end
     
     return return_value
@@ -90,4 +91,7 @@ class Breaker
     @state.trip
     @reclose_time = Time.new + Time::Span.new(0, 0, @duration)
   end
+end
+
+class CircuitOpenException < Exception
 end

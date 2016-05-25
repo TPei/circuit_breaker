@@ -11,11 +11,13 @@ describe "Breaker" do
           "swag"
         end.should eq "swag"
       elsif n > 10 && n < 14
-        breaker.run do
-          fail "random fail"
+        expect_raises ArgumentError do
+          breaker.run do
+            raise ArgumentError.new
+          end
         end
       else
-        expect_raises Exception do
+        expect_raises CircuitOpenException do
           breaker.run do
             "swag"
           end
@@ -42,8 +44,10 @@ describe "Breaker" do
 
     it "counts fails for failing blocks and sets last_fail timestamp" do
       breaker = Breaker.new(threshold: 5, reenable_after: 10)
-      breaker.run do
-        raise "some error"
+      expect_raises ArgumentError do
+        breaker.run do
+          raise ArgumentError.new
+        end
       end
       breaker.exec_count.should eq 1
       breaker.fail_count.should eq 1
@@ -51,14 +55,16 @@ describe "Breaker" do
 
     it "does not execute if error_rate is too high" do
       breaker = Breaker.new(threshold: 5, reenable_after: 10)
-      breaker.run do
-        raise "some error"
+      expect_raises ArgumentError do
+        breaker.run do
+          raise ArgumentError.new
+        end
       end
       breaker.exec_count.should eq 1
       breaker.fail_count.should eq 1
       
       # error rate too high now
-      expect_raises Exception do
+      expect_raises CircuitOpenException do
         breaker.run do
           "swag"
         end
@@ -67,14 +73,16 @@ describe "Breaker" do
 
     it "resets circuit after the given time" do
       breaker = Breaker.new(threshold: 5, reenable_after: 1)
-      breaker.run do
-        raise "some error"
+      expect_raises ArgumentError do
+        breaker.run do
+          raise ArgumentError.new
+        end
       end
       breaker.exec_count.should eq 1
       breaker.fail_count.should eq 1
       
       # error rate too high now
-      expect_raises Exception do
+      expect_raises CircuitOpenException do
         breaker.run do
           "swag"
         end
