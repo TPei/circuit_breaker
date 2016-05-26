@@ -9,7 +9,7 @@ Wrap API calls inside a breaker, if the error rate in a given time frame surpass
 ## Usage
 
 Create a new breaker:
-```
+```crystal
 breaker = Breaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
   timewindow: 60, # in s: anything older will be ignored in error_rate
@@ -18,14 +18,14 @@ breaker = Breaker.new(
 ```
 
 Then wrap whatever you like:
-```
+```crystal
 breaker.run do
   my_rest_call()
 end
 ```
 
 The Breaker will open and throw an CircuitOpenException for all subsequent calls, once the threshold is reached. You can of course catch these exceptions and do whatever you want :D
-```
+```crystal
 begin
   breaker.run do
     my_rest_call()
