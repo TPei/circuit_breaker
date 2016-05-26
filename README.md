@@ -6,6 +6,22 @@ Given a certain error threshold, timeframe and timeout window, a certain breaker
 
 Wrap API calls inside a breaker, if the error rate in a given time frame surpasses a certain threshold, all subsequent calls will fail for a given duration.
 
+## Installation
+
+Add to your shard.yml
+
+```yaml
+dependencies:
+  circuit_breaker:
+    github: tpei/circuit_breaker
+```
+
+and then install the library into your project with
+
+```bash
+$ crystal dep
+```
+
 ## Usage
 
 Create a new breaker:
