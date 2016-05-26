@@ -2,18 +2,14 @@ require "./circuit_state"
 require "./error_watcher"
 
 class CircuitBreaker
-  @threshold : Int32
+  @error_threshold : Int32
   @duration : Int32
   @reclose_time : Time
-  @timeframe : Time::Span
 
-  def initialize(threshold error_threshold, timewindow timeframe, reenable_after duration)
-    @threshold = error_threshold
-    @duration = duration
+  def initialize(threshold @error_threshold, timewindow timeframe, reenable_after @duration)
     @state = CircuitState.new
     @reclose_time = Time.new
-    @timeframe = Time::Span.new(0, 0, timeframe)
-    @error_watcher = ErrorWatcher.new(@timeframe)
+    @error_watcher = ErrorWatcher.new(Time::Span.new(0, 0, timeframe))
   end
   
   def run(&block)
@@ -22,19 +18,12 @@ class CircuitBreaker
       raise CircuitOpenException.new("Circuit Breaker Open")
     end
 
-    # now state is closed and not reclosable
-
-    # if error_rate still ok, execute
-    if errors_ok?
+    if error_rate < @error_threshold
       begin
         @error_watcher.add_execution
-
         return_value = yield
       rescue exc
-        @error_watcher.add_failure
-        if !errors_ok?
-          open_circuit
-        end
+        handle_execution_error
         raise exc
       end
     else # if error_rate not ok, open circuit
@@ -48,6 +37,13 @@ class CircuitBreaker
   # ---------------------------
   # private methods
   # ---------------------------
+  private def handle_execution_error
+    @error_watcher.add_failure
+    if error_rate >= @error_threshold
+      open_circuit
+    end
+  end
+
   private def open?
     @state.state == :open && !reclose?
   end
@@ -65,8 +61,8 @@ class CircuitBreaker
     @error_watcher.reset
   end
 
-  private def errors_ok?
-    @error_watcher.error_rate < @threshold
+  private def error_rate
+    @error_watcher.error_rate
   end
 
   private def reclose?
