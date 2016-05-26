@@ -10,6 +10,8 @@ Wrap API calls inside a breaker, if the error rate in a given time frame surpass
 
 Create a new breaker:
 ```crystal
+require 'breaker'
+
 breaker = Breaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
   timewindow: 60, # in s: anything older will be ignored in error_rate
