@@ -1,5 +1,5 @@
 require "spec"
-require "../lib/circuit_state.cr"
+require "../src/circuit_state.cr"
 
 describe "CircuitState" do
   describe "#trip" do
