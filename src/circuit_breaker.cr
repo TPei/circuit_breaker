@@ -1,3 +1,5 @@
+require "./circuit_state"
+
 class CircuitBreaker
   @threshold : Int32
   @duration : Int32
