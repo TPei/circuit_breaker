@@ -1,5 +1,5 @@
 require "spec"
-require "../src/breaker.cr"
+require "../src/circuit_breaker.cr"
 
 describe "Breaker" do
   describe "feature test" do
