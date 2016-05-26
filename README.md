@@ -15,7 +15,7 @@ require 'breaker'
 breaker = Breaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
   timewindow: 60, # in s: anything older will be ignored in error_rate
-  reenable_after: 60 # after x seconds, the breaker will allow executions again
+  reenable_after: 300 # after x seconds, the breaker will allow executions again
 )
 ```
 
