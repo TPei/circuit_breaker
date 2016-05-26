@@ -10,9 +10,9 @@ Wrap API calls inside a breaker, if the error rate in a given time frame surpass
 
 Create a new breaker:
 ```crystal
-require 'breaker'
+require 'circuit_breaker'
 
-breaker = Breaker.new(
+breaker = CircuitBreaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
   timewindow: 60, # in s: anything older will be ignored in error_rate
   reenable_after: 300 # after x seconds, the breaker will allow executions again

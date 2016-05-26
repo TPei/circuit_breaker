@@ -1,4 +1,4 @@
-class Breaker
+class CircuitBreaker
   @threshold : Int32
   @duration : Int32
   @reclose_time : Time
