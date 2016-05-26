@@ -20,7 +20,7 @@ describe "ErrorWatcher" do
     it "throws an error if there are more failures than executions" do
       watcher = ErrorWatcher.new(Time::Span.new(0, 0, 60))
       watcher.add_failure
-      expect_raises InvalidStateException do
+      expect_raises MoreErrorsThanExecutionsException do
         watcher.error_rate
       end
     end

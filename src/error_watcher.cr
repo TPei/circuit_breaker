@@ -22,16 +22,15 @@ class ErrorWatcher
   def error_rate : Float64
     clean_old_records
 
-    raise InvalidStateException.new if failure_count > execution_count
-    return 0.to_f if @executions.empty?
+    raise MoreErrorsThanExecutionsException.new if failure_count > execution_count
+    return 0.to_f if @executions.size == 0
 
-    @failures.size / @executions.size.to_f * 100
+    failure_count / execution_count.to_f * 100
   end
 
   # ---------------------------
-  # private methods 
+  # private methods
   # ---------------------------
-  
   private def clean_old_records
     clean_old @failures
     clean_old @executions
@@ -53,5 +52,5 @@ class ErrorWatcher
 
 end
 
-class InvalidStateException < Exception
+class MoreErrorsThanExecutionsException < Exception
 end
