@@ -14,6 +14,7 @@ Add to your shard.yml
 dependencies:
   circuit_breaker:
     github: tpei/circuit_breaker
+    branch: master
 ```
 
 and then install the library into your project with
