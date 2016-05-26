@@ -18,17 +18,12 @@ class CircuitBreaker
       raise CircuitOpenException.new("Circuit Breaker Open")
     end
 
-    if error_rate < @error_threshold
-      begin
-        @error_watcher.add_execution
-        return_value = yield
-      rescue exc
-        handle_execution_error
-        raise exc
-      end
-    else # if error_rate not ok, open circuit
-      open_circuit
-      raise CircuitOpenException.new("Circuit Breaker Opened")
+    begin
+      @error_watcher.add_execution
+      return_value = yield
+    rescue exc
+      handle_execution_error
+      raise exc
     end
     
     return return_value
@@ -45,7 +40,16 @@ class CircuitBreaker
   end
 
   private def open?
-    @state.state == :open && !reclose?
+    @state.state == :open && !reclose? && !openable?
+  end
+
+  private def openable?
+    if error_rate >= @error_threshold && @state.state != :open
+      open_circuit
+      true
+    else
+      false
+    end
   end
 
   private def trip
