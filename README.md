@@ -27,7 +27,7 @@ $ crystal deps
 
 Create a new breaker:
 ```crystal
-require 'circuit_breaker'
+require "circuit_breaker"
 
 breaker = CircuitBreaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
