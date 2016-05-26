@@ -1,4 +1,4 @@
-# circuit_breaker [![Build Status](https://travis-ci.org/tpei/circuit_breaker.svg?branch=master)](https://travis-ci.org/tpei/circuit_breaker)
+# circuit_breaker [![Build Status](https://travis-ci.org/TPei/circuit_breaker.svg?branch=master)](https://travis-ci.org/TPei/circuit_breaker)
 
 Simple Implementation of the circuit breaker pattern in Crystal.
 
