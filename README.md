@@ -2,7 +2,7 @@
 
 Simple Implementation of the circuit breaker pattern in Crystal.
 
-Given a certain error threshold, timeframe and timeout window, a certain breaker can be used to monitor criticial command executions. Circuit breakers are usually usually used to prevent unnecessary requests if a server ressource et al becomes unavailable.
+Given a certain error threshold, timeframe and timeout window, a certain breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable.
 
 Wrap API calls inside a breaker, if the error rate in a given time frame surpasses a certain threshold, all subsequent calls will fail for a given duration.
 
