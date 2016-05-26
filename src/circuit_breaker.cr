@@ -18,7 +18,7 @@ class CircuitBreaker
   
   def run(&block)
     # if open and not reclosable -> fail
-    if @state.state == :open && !reclose?
+    if open?
       raise CircuitOpenException.new("Circuit Breaker Open")
     end
 
@@ -48,6 +48,10 @@ class CircuitBreaker
   # ---------------------------
   # private methods
   # ---------------------------
+  private def open?
+    @state.state == :open && !reclose?
+  end
+
   private def trip
     @state.trip
 
