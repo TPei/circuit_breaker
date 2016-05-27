@@ -6,12 +6,16 @@ class CircuitBreaker
   @duration : Int32
   @reclose_time : Time
 
-  def initialize(threshold @error_threshold, timewindow timeframe, reenable_after @duration, handled_errors = [] of Exception)
+  def initialize(threshold @error_threshold, timewindow timeframe, reenable_after @duration, handled_errors = [] of Exception, ignored_errors = [] of Exception)
     @state = CircuitState.new
     @reclose_time = Time.new
     @error_watcher = ErrorWatcher.new(Time::Span.new(0, 0, timeframe))
+
+    # two-step initialization because of known crystal compiler bug
     @handled_errors = [] of Exception
     @handled_errors += handled_errors
+    @ignored_errors = [] of Exception
+    @ignored_errors += ignored_errors
   end
   
   def run(&block)
@@ -36,9 +40,11 @@ class CircuitBreaker
   # ---------------------------
   # private methods
   # ---------------------------
-  private def monitor?(exception_type : Exception)
+  private def monitor?(exception : Exception)
+    exception_type = exception.class
     errors = @handled_errors.map(&.class)
-    errors.includes?(exception_type.class) || errors.empty?
+    ignored = @ignored_errors.map(&.class)
+    (errors.includes?(exception_type) || errors.empty?) && !ignored.includes?(exception_type)
   end
 
   private def handle_execution_error

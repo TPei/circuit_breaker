@@ -92,6 +92,32 @@ describe "CircuitBreaker" do
         end
       end
     end
+
+    it "if the breaker was given an array of Exception types to ignore, those will not be monitored" do
+      breaker = CircuitBreaker.new(threshold: 20, timewindow: 2, reenable_after: 60, ignored_errors: [ArgumentError.new])
+
+      (1..10).each do |n|
+        expect_raises ArgumentError do
+          breaker.run do
+            raise ArgumentError.new
+          end
+        end
+      end
+
+      (1..3).each do |n|
+        expect_raises MyError do
+          breaker.run do
+            raise MyError.new
+          end
+        end
+      end
+
+      expect_raises CircuitOpenException do
+        breaker.run do
+          raise MyError.new
+        end
+      end
+    end
   end
 end
 
