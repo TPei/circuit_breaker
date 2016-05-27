@@ -55,7 +55,7 @@ rescue exc : CircuitOpenException
 end
 ```
 
-If you are feeling really funky, you can also hand in exception class to monitor. You might want to catch RandomRequestError, but not ArgumentError, so do this:
+If you are feeling really funky, you can also hand in exception class to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
 ```crystal
 breaker = CircuitBreaker.new(
   threshold: 5, # % of errors before you want to trip the circuit
