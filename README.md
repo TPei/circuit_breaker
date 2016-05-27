@@ -55,5 +55,36 @@ rescue exc : CircuitOpenException
 end
 ```
 
+If you are feeling really funky, you can also hand in exception class to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
+```crystal
+breaker = CircuitBreaker.new(
+  threshold: 5,
+  timewindow: 60,
+  reenable_after: 300,
+  handled_errors: [RandomRestError.new]
+)
+
+breaker.run
+  raise ArgumentError.new("won't count towards the error rate")
+end
+```
+
+Of course you can also add custom errors to ignore and count all others:
+```crystal
+breaker = CircuitBreaker.new(
+  threshold: 5,
+  timewindow: 60,
+  reenable_after: 300,
+  ignored_errors: [ArgumentError.new]
+)
+
+breaker.run
+  raise ArgumentError.new("won't count towards the error rate")
+end
+```
+
+Unfortunately this both won't match against exception subclasses just yet, so at the moment you have to specify the exact class to monitor and can't just use `RestException` to match every subclass like `RestTimeoutException < RestException`...
+
+
 ## Thanks
 Special thanks goes to Pedro Belo on whose ruby circuit breaker implementation this is loosely based. [CB2](https://github.com/pedro/cb2)
