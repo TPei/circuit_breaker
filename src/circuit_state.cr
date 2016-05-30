@@ -16,24 +16,22 @@ class CircuitState
   end
 
   def trip
-    assert_transition OPEN
-    @state = OPEN
+    transition_to OPEN
   end
 
   def attempt_reset
-    assert_transition HALF_OPEN
-    @state = HALF_OPEN
+    transition_to HALF_OPEN
   end
 
   def reset
-    assert_transition CLOSED
-    @state = CLOSED
+    transition_to CLOSED
   end
 
-  private def assert_transition(new_state)
+  private def transition_to(new_state)
     unless ALLOWED_TRANSITIONS[@state].includes? new_state
       raise IllegalStateTransition.new("From #{@state} to #{new_state}")
     end
+    @state = new_state
   end
 end
 
