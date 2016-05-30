@@ -33,6 +33,44 @@ describe "CircuitBreaker" do
       end.should eq "swag"
     end
 
+    it "goes directly back to open if the first execution after reopening fails" do
+      breaker = CircuitBreaker.new(threshold: 20, timewindow: 60, reenable_after: 2)
+
+      (1..20).each do |n|
+        if n <= 10
+          breaker.run do
+            "swag"
+          end.should eq "swag"
+        elsif n > 10 && n < 14
+          expect_raises ArgumentError do
+            breaker.run do
+              raise ArgumentError.new
+            end
+          end
+        else
+          expect_raises CircuitOpenException do
+            breaker.run do
+              "swag"
+            end
+          end
+        end
+      end
+
+      sleep 2
+
+      expect_raises ArgumentError do
+        breaker.run do
+          raise ArgumentError.new
+        end
+      end
+
+      expect_raises CircuitOpenException do
+        breaker.run do
+          "swag"
+        end
+      end
+    end
+
     it "errors and executions only count in a given timeframe" do
       breaker = CircuitBreaker.new(threshold: 20, timewindow: 2, reenable_after: 60)
 

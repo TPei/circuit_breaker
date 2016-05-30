@@ -10,10 +10,13 @@ describe "CircuitState" do
       cs.trip
       cs.state.should eq :open
     end
+  end
 
-    it "does not transition from :open" do
+  describe "#attempt_reset" do
+    it "transitions from :closed to :half_open" do
       cs = CircuitState.new
-      cs.trip
+      cs.attempt_reset
+      cs.state.should eq :half_open
     end
   end
 
@@ -23,6 +26,11 @@ describe "CircuitState" do
       cs.state.should eq :closed
 
       cs.trip
+      cs.reset
+      cs.state.should eq :closed
+
+      cs.trip
+      cs.attempt_reset
       cs.reset
       cs.state.should eq :closed
     end

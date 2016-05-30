@@ -27,6 +27,7 @@ class CircuitBreaker
     begin
       @error_watcher.add_execution
       return_value = yield
+      handle_execution_success
     rescue exc
       if monitor? exc
         handle_execution_error
@@ -49,8 +50,14 @@ class CircuitBreaker
 
   private def handle_execution_error
     @error_watcher.add_failure
-    if error_rate >= @error_threshold
+    if error_rate >= @error_threshold || @state.state == :half_open
       open_circuit
+    end
+  end
+
+  private def handle_execution_success
+    if @state.state == :half_open
+      reset
     end
   end
 
@@ -74,7 +81,7 @@ class CircuitBreaker
   end
 
   private def reset
-    @state.reset
+    @state.attempt_reset
 
     @reclose_time = Time.new
     @error_watcher.reset
