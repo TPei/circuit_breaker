@@ -81,7 +81,7 @@ class CircuitBreaker
   end
 
   private def reset
-    @state.attempt_reset
+    @state.reset
 
     @reclose_time = Time.new
     @error_watcher.reset
@@ -93,7 +93,7 @@ class CircuitBreaker
 
   private def reclose?
     if Time.new > @reclose_time
-      reset
+      @state.attempt_reset
       true
     else
       false
