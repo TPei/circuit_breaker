@@ -57,7 +57,7 @@ end
 
 After the given reenable time, the circuit will transition to "half open". This will completely reset the circuit if the next execution succeeds, but reopen the circuit and reset the timer if the next execution fails.
 
-If you are feeling really funky, you can also hand in exception class to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
+If you are feeling really funky, you can also hand in exception classes to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
 ```crystal
 breaker = CircuitBreaker.new(
   threshold: 5,
