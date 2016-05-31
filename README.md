@@ -1,6 +1,6 @@
 # circuit_breaker [![Build Status](https://travis-ci.org/TPei/circuit_breaker.svg?branch=master)](https://travis-ci.org/TPei/circuit_breaker)
 
-Simple Implementation of the circuit breaker pattern in Crystal.
+Simple Implementation of the [circuit breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html) in Crystal.
 
 Given a certain error threshold, timeframe and timeout window, a breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable. This protects the server from additional load and allows it to recover and relieves the client from requests that are doomed to fail.
 
@@ -54,6 +54,8 @@ rescue exc : CircuitOpenException
   42
 end
 ```
+
+After the given reenable time, the circuit will transition to "half open". This will completely reset the circuit if the next execution succeeds, but reopen the circuit and reset the timer if the next execution fails.
 
 If you are feeling really funky, you can also hand in exception class to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
 ```crystal
