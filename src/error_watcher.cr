@@ -5,7 +5,7 @@ class ErrorWatcher
 
   def initialize(@timeframe)
   end
-  
+
   def add_failure
     @failures << Time.new
   end
@@ -18,7 +18,7 @@ class ErrorWatcher
     @failures = [] of Time
     @executions = [] of Time
   end
-  
+
   def error_rate : Float64
     clean_old_records
 

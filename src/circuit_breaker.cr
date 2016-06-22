@@ -17,7 +17,7 @@ class CircuitBreaker
     @ignored_errors = [] of Exception
     @ignored_errors += ignored_errors
   end
-  
+
   def run(&block)
     # if open and not reclosable -> fail
     if open?
@@ -34,7 +34,7 @@ class CircuitBreaker
       end
       raise exc
     end
-    
+
     return return_value
   end
 
