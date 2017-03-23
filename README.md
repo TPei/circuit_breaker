@@ -89,4 +89,4 @@ Unfortunately this both won't match against exception subclasses just yet, so at
 
 
 ## Thanks
-Special thanks goes to Pedro Belo on whose ruby circuit breaker implementation this is loosely based. [CB2](https://github.com/pedro/cb2)
+Special thanks goes to Pedro Belo on whose ruby circuit breaker implementation ([CB2](https://github.com/pedro/cb2)) this is loosely based. 
