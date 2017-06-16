@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/TPei/circuit_breaker">
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/doc.js"></script>
+  <title>README - github.com/TPei/circuit_breaker</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li class="current"><a href="index.html">README</a></li>
+  </ul>
+
+  <ul>
+
+  <li class=" " data-id="github.com/TPei/circuit_breaker/CircuitBreaker" data-name="circuitbreaker">
+      <a href="CircuitBreaker.html">CircuitBreaker</a>
+
+    </li>
+
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1>circuit_breaker <a href="https://travis-ci.org/TPei/circuit_breaker" target="_blank"><img src="https://travis-ci.org/TPei/circuit_breaker.svg?branch=master" alt="Build Status"/></a></h1>
+
+<p>Simple Implementation of the <a href="http://martinfowler.com/bliki/CircuitBreaker.html" target="_blank">circuit breaker pattern</a> in Crystal.</p>
+
+<p>Given a certain error threshold, timeframe and timeout window, a breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable. This protects the server from additional load and allows it to recover and relieves the client from requests that are doomed to fail.</p>
+
+<p>Wrap API calls inside a breaker, if the error rate in a given time frame surpasses a certain threshold, all subsequent calls will fail for a given duration.</p>
+
+<h2>Installation</h2>
+
+<p>Add to your shard.yml</p>
+
+<pre><code class='language-yaml'>dependencies:
+  circuit_breaker:
+    github: tpei/circuit_breaker
+    branch: master</code></pre>
+
+<p>and then install the library into your project with</p>
+
+<pre><code class='language-bash'>$ crystal deps</code></pre>
+
+<h2>Usage</h2>
+
+<p>Create a new breaker:</p>
+
+<pre><code class='language-crystal'><span class="k">require</span> <span class="s">&quot;circuit_breaker&quot;</span>
+
+breaker <span class="o">=</span> <span class="t">CircuitBreaker</span>.<span class="k">new</span>(
+  threshold: <span class="n">5</span>, <span class="c"># &#37; of errors before you want to trip the circuit</span>
+  timewindow: <span class="n">60</span>, <span class="c"># in s: anything older will be ignored in error_rate</span>
+  reenable_after: <span class="n">300</span> <span class="c"># after x seconds, the breaker will allow executions again</span>
+)</code></pre>
+
+<p>Then wrap whatever you like:</p>
+
+<pre><code class='language-crystal'>breaker.run <span class="k">do</span>
+  my_rest_call()
+<span class="k">end</span></code></pre>
+
+<p>The Breaker will open and throw an CircuitOpenException for all subsequent calls, once the threshold is reached. You can of course catch these exceptions and do whatever you want :D</p>
+
+<pre><code class='language-crystal'><span class="k">begin</span>
+  breaker.run <span class="k">do</span>
+    my_rest_call()
+  <span class="k">end</span>
+<span class="k">rescue</span> exc : <span class="t">CircuitOpenException</span>
+  log <span class="s">&quot;happens to the best of us...&quot;</span>
+  <span class="n">42</span>
+<span class="k">end</span></code></pre>
+
+<p>After the given reenable time, the circuit will transition to "half open". This will completely reset the circuit if the next execution succeeds, but reopen the circuit and reset the timer if the next execution fails.</p>
+
+<p>If you are feeling really funky, you can also hand in exception classes to monitor. You might want to catch <code>RandomRestError</code>, but not <code>ArgumentError</code>, so do this:</p>
+
+<pre><code class='language-crystal'>breaker <span class="o">=</span> <span class="t">CircuitBreaker</span>.<span class="k">new</span>(
+  threshold: <span class="n">5</span>,
+  timewindow: <span class="n">60</span>,
+  reenable_after: <span class="n">300</span>,
+  handled_errors: [<span class="t">RandomRestError</span>.<span class="k">new</span>]
+)
+
+breaker.run
+  raise <span class="t">ArgumentError</span>.<span class="k">new</span>(<span class="s">&quot;won&#39;t count towards the error rate&quot;</span>)
+<span class="k">end</span></code></pre>
+
+<p>Of course you can also add custom errors to ignore and count all others:</p>
+
+<pre><code class='language-crystal'>breaker <span class="o">=</span> <span class="t">CircuitBreaker</span>.<span class="k">new</span>(
+  threshold: <span class="n">5</span>,
+  timewindow: <span class="n">60</span>,
+  reenable_after: <span class="n">300</span>,
+  ignored_errors: [<span class="t">ArgumentError</span>.<span class="k">new</span>]
+)
+
+breaker.run
+  raise <span class="t">ArgumentError</span>.<span class="k">new</span>(<span class="s">&quot;won&#39;t count towards the error rate&quot;</span>)
+<span class="k">end</span></code></pre>
+
+<p>Unfortunately this both won't match against exception subclasses just yet, so at the moment you have to specify the exact class to monitor and can't just use <code>RestException</code> to match every subclass like <code>RestTimeoutException < RestException</code>...</p>
+
+<h2>Thanks</h2>
+
+<p>Special thanks goes to Pedro Belo on whose ruby circuit breaker implementation (<a href="https://github.com/pedro/cb2" target="_blank">CB2</a>) this is loosely based. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/TPei/circuit_breaker">
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/doc.js"></script>
+  <title>CircuitBreaker - github.com/TPei/circuit_breaker</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li><a href="index.html">README</a></li>
+  </ul>
+
+  <ul>
+
+  <li class=" current" data-id="github.com/TPei/circuit_breaker/CircuitBreaker" data-name="circuitbreaker">
+      <a href="CircuitBreaker.html">CircuitBreaker</a>
+
+    </li>
+
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> CircuitBreaker
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="CircuitBreaker.html">CircuitBreaker</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>Overview</h2>
+
+  <p>Simple Implementation of the circuit breaker pattern in Crystal.</p>
+
+<p>Given a certain error threshold, timeframe and timeout window, a breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable. This protects the server from additional load and allows it to recover and relieves the client from requests that are doomed to fail.</p>
+
+<p>Wrap API calls inside a breaker, if the error rate in a given time frame surpasses a certain threshold, all subsequent calls will fail for a given duration.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>Defined in:</h2>
+
+
+      <a href="https://github.com/TPei/circuit_breaker/blob/d40a22174d294b47d9335985457b4f1e81214389/src/circuit_breaker.cr#L9" target="_blank">circuit_breaker.cr</a>
+
+    <br/>
+
+
+
+
+
+
+  <h2>Class Method Summary</h2>
+  <ul class="list-summary">
+
+      <li class="entry-summary">
+        <a href="#new%28thresholderror_threshold%2Ctimewindowtimeframe%2Creenable_afterduration%2Chandled_errors%3D%5B%5DofException%2Cignored_errors%3D%5B%5DofException%29-class-method" class="signature"><strong>.new</strong>(threshold error_threshold, timewindow timeframe, reenable_after duration, handled_errors = <span class="o">[]</span> <span class="k">of</span> <span class="t">Exception</span>, ignored_errors = <span class="o">[]</span> <span class="k">of</span> <span class="t">Exception</span>)</a>
+
+          <div class="summary"><p>creates a CircuitBreaker instance with a specified error threshold, timeframe, breaker duration and optionally a number of ignored or handled errors</p></div>
+
+      </li>
+
+  </ul>
+
+
+
+  <h2>Instance Method Summary</h2>
+  <ul class="list-summary">
+
+      <li class="entry-summary">
+        <a href="#run%28%26block%29-instance-method" class="signature"><strong>#run</strong>(&block)</a>
+
+          <div class="summary"><p>get's passed a block to watch for errors every error thrown inside your block counts towards the error rate once the threshold is surpassed, it starts throwing <code><a href="CircuitOpenException.html">CircuitOpenException</a></code>s you can catch these rrors and implement some fallback behaviour <code></code>` begin   breaker.run do     my_rest_call()   end rescue exc : CircuitOpenException   log "happens to the best of us..."   42 end <code></code>`</p></div>
+
+      </li>
+
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+  <h2>Class Method Detail</h2>
+
+    <div class="entry-detail" id="new&#40;thresholderror_threshold,timewindowtimeframe,reenable_afterduration,handled_errors&#61;&#91;&#93;ofException,ignored_errors&#61;&#91;&#93;ofException&#41;-class-method">
+      <div class="signature">
+
+        def self.<strong>new</strong>(threshold error_threshold, timewindow timeframe, reenable_after duration, handled_errors = <span class="o">[]</span> <span class="k">of</span> <span class="t">Exception</span>, ignored_errors = <span class="o">[]</span> <span class="k">of</span> <span class="t">Exception</span>)
+
+        <a class="method-permalink" href="#new%28thresholderror_threshold%2Ctimewindowtimeframe%2Creenable_afterduration%2Chandled_errors%3D%5B%5DofException%2Cignored_errors%3D%5B%5DofException%29-class-method">#</a>
+      </div>
+
+        <div class="doc"><p>creates a CircuitBreaker instance with a specified error threshold, timeframe, breaker duration and optionally a number of ignored or handled errors</p>
+
+<pre><code>breaker <span class="o">=</span> <span class="t">CircuitBreaker</span>.<span class="k">new</span>(
+  threshold: <span class="n">5</span>, <span class="c"># &#37; of errors before you want to trip the circuit</span>
+  timewindow: <span class="n">60</span>, <span class="c"># in s: anything older will be ignored in error_rate</span>
+  reenable_after: <span class="n">300</span> <span class="c"># after x seconds, the breaker will allow executions again</span>
+)</code></pre></div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/TPei/circuit_breaker/blob/d40a22174d294b47d9335985457b4f1e81214389/src/circuit_breaker.cr#L23" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+
+
+
+  <h2>Instance Method Detail</h2>
+
+    <div class="entry-detail" id="run&#40;&amp;block&#41;-instance-method">
+      <div class="signature">
+
+        def <strong>run</strong>(&block)
+
+        <a class="method-permalink" href="#run%28%26block%29-instance-method">#</a>
+      </div>
+
+        <div class="doc"><p>get's passed a block to watch for errors
+every error thrown inside your block counts towards the error rate
+once the threshold is surpassed, it starts throwing <code><a href="CircuitOpenException.html">CircuitOpenException</a></code>s
+you can catch these rrors and implement some fallback behaviour</p>
+
+<pre><code><span class="k">begin</span>
+  breaker.run <span class="k">do</span>
+    my_rest_call()
+  <span class="k">end</span>
+<span class="k">rescue</span> exc : <span class="t">CircuitOpenException</span>
+  log <span class="s">&quot;happens to the best of us...&quot;</span>
+  <span class="n">42</span>
+<span class="k">end</span></code></pre></div>
+
+      <br/>
+      <div>
+
+          [<a href="https://github.com/TPei/circuit_breaker/blob/d40a22174d294b47d9335985457b4f1e81214389/src/circuit_breaker.cr#L49" target="_blank">View source</a>]
+
+      </div>
+    </div>
+
+
+
+
+
+</div>
+
+</body>
+</html>
