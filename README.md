@@ -2,6 +2,8 @@
 
 Simple Implementation of the [circuit breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html) in Crystal.
 
+> The basic idea behind the circuit breaker is very simple. You wrap a protected function call in a circuit breaker object, which monitors for failures. Once the failures reach a certain threshold, the circuit breaker trips, and all further calls to the circuit breaker return with an error, without the protected call being made at all. Usually you'll also want some kind of monitor alert if the circuit breaker trips.
+
 Given a certain error threshold, timeframe and timeout window, a breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable. This protects the server from additional load and allows it to recover and relieves the client from requests that are doomed to fail.
 
 Wrap API calls inside a breaker, if the error rate in a given time frame surpasses a certain threshold, all subsequent calls will fail for a given duration.
