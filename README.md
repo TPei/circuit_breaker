@@ -2,6 +2,8 @@
 
 Simple Implementation of the [circuit breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html) in Crystal.
 
+## What??!?
+
 > The basic idea behind the circuit breaker is very simple. You wrap a protected function call in a circuit breaker object, which monitors for failures. Once the failures reach a certain threshold, the circuit breaker trips, and all further calls to the circuit breaker return with an error, without the protected call being made at all. Usually you'll also want some kind of monitor alert if the circuit breaker trips. - Martin Fowler
 
 Given a certain error threshold, timeframe and timeout window, a breaker can be used to monitor criticial command executions. Circuit breakers are usually used to prevent unnecessary requests if a server ressource et al becomes unavailable. This protects the server from additional load and allows it to recover and relieves the client from requests that are doomed to fail.
@@ -45,6 +47,8 @@ breaker.run do
 end
 ```
 
+### Handling CircuitBreaker trips
+
 The Breaker will open and throw an CircuitOpenException for all subsequent calls, once the threshold is reached. You can of course catch these exceptions and do whatever you want :D
 ```crystal
 begin
@@ -59,7 +63,9 @@ end
 
 After the given reenable time, the circuit will transition to "half open". This will completely reset the circuit if the next execution succeeds, but reopen the circuit and reset the timer if the next execution fails.
 
-If you are feeling really funky, you can also hand in exception classes to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
+### Handling only certain error types
+
+If you are feeling really funky, you can also limit the exception classes to monitor. You might want to catch `RandomRestError`, but not `ArgumentError`, so do this:
 ```crystal
 breaker = CircuitBreaker.new(
   threshold: 5,
@@ -73,7 +79,9 @@ breaker.run
 end
 ```
 
-Of course you can also add custom errors to ignore and count all others:
+### Ignoring certain error types
+
+Conversely, you can also add custom errors to ignore and count all others:
 ```crystal
 breaker = CircuitBreaker.new(
   threshold: 5,
