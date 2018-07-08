@@ -102,7 +102,7 @@ describe "CircuitBreaker" do
         end
       end
 
-      sleep 2
+      sleep 2.1
 
       expect_raises ArgumentError do
         breaker.run do
