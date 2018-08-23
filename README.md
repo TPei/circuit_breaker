@@ -1,4 +1,4 @@
-# circuit_breaker [![Build Status](https://travis-ci.org/TPei/circuit_breaker.svg?branch=master)](https://travis-ci.org/TPei/circuit_breaker) [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/TPei)
+# circuit_breaker [![Build Status](https://travis-ci.org/TPei/circuit_breaker.svg?branch=master)](https://travis-ci.org/TPei/circuit_breaker) [![Say Thanks!](https://img.shields.io/badge/say_thanks-:)-blue.svg)](https://saythanks.io/to/TPei)
 
 Simple Implementation of the [circuit breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html) in Crystal.
 
