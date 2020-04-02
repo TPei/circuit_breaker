@@ -22,7 +22,7 @@ class CircuitBreaker
   # ```
   def initialize(threshold @error_threshold, timewindow timeframe, reenable_after @duration, handled_errors = [] of Exception, ignored_errors = [] of Exception)
     @state = CircuitState.new
-    @reclose_time = Time.new
+    @reclose_time = Time.local
     @error_watcher = ErrorWatcher.new(Time::Span.new(0, 0, timeframe))
 
     # two-step initialization because of known crystal compiler bug
@@ -105,13 +105,13 @@ class CircuitBreaker
   private def trip
     @state.trip
 
-    @reclose_time = Time.new + Time::Span.new(0, 0, @duration)
+    @reclose_time = Time.local + Time::Span.new(0, 0, @duration)
   end
 
   private def reset
     @state.reset
 
-    @reclose_time = Time.new
+    @reclose_time = Time.local
     @error_watcher.reset
   end
 
@@ -120,7 +120,7 @@ class CircuitBreaker
   end
 
   private def reclose?
-    if Time.new > @reclose_time
+    if Time.local > @reclose_time
       @state.attempt_reset
       true
     else
@@ -130,7 +130,7 @@ class CircuitBreaker
 
   private def open_circuit
     @state.trip
-    @reclose_time = Time.new + Time::Span.new(0, 0, @duration)
+    @reclose_time = Time.local + Time::Span.new(0, 0, @duration)
   end
 end
 
