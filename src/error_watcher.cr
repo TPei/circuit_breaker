@@ -7,11 +7,11 @@ class ErrorWatcher
   end
 
   def add_failure
-    @failures << Time.new
+    @failures << Time.local
   end
 
   def add_execution
-    @executions << Time.new
+    @executions << Time.local
   end
 
   def reset
@@ -37,7 +37,7 @@ class ErrorWatcher
   end
 
   private def clean_old(arr : Array(Time))
-    threshold = Time.new - @timeframe
+    threshold = Time.local - @timeframe
 
     arr.reject! { |time| time < threshold }
   end
