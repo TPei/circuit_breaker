@@ -9,7 +9,7 @@ describe "ErrorWatcher" do
 
   describe "#error_rate" do
     it "calculates error rate correctly and cleans after time" do
-      watcher = ErrorWatcher.new(Time::Span.new(0, 0, 1))
+      watcher = ErrorWatcher.new(Time::Span.new(hours: 0, minutes: 0, seconds: 1))
       watcher.add_failure
       watcher.add_execution
       watcher.error_rate.should eq 100
@@ -18,7 +18,7 @@ describe "ErrorWatcher" do
     end
 
     it "throws an error if there are more failures than executions" do
-      watcher = ErrorWatcher.new(Time::Span.new(0, 0, 60))
+      watcher = ErrorWatcher.new(Time::Span.new(hours: 0, minutes: 0, seconds: 60))
       watcher.add_failure
       expect_raises MoreErrorsThanExecutionsException do
         watcher.error_rate
@@ -26,7 +26,7 @@ describe "ErrorWatcher" do
     end
 
     it "returns 0 if failures and executions are empty" do
-      watcher = ErrorWatcher.new(Time::Span.new(0, 0, 60))
+      watcher = ErrorWatcher.new(Time::Span.new(hours: 0, minutes: 0, seconds: 60))
       watcher.error_rate.should eq 0
     end
   end
