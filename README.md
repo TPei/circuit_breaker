@@ -1,6 +1,6 @@
 # circuit_breaker [![Build Status](https://travis-ci.org/TPei/circuit_breaker.svg?branch=master)](https://travis-ci.org/TPei/circuit_breaker) [![Say Thanks!](https://img.shields.io/badge/say_thanks-:%29-blue.svg)](https://saythanks.io/to/TPei)
 
-###### This project is being built once a month with the latest crystal version (works with v1.7.2 🎉)
+###### This project is being built weekly with the latest crystal version (works with v1.7.2 🎉)
 
 Simple Implementation of the [circuit breaker pattern](http://martinfowler.com/bliki/CircuitBreaker.html) in Crystal.
 
